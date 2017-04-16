@@ -1,9 +1,9 @@
 -- User Table
 
 CREATE TABLE mst_user (
-	id SERIAL PRIMARY KEY,
-	email CHAR varying(20) NOT NULL,
-	name CHAR varying(40) NOT NULL,
-	password CHAR varying(70) NOT NULL,
-	UNIQUE (email)
+	user_id		VARCHAR(255) PRIMARY KEY,
+	first_name	VARCHAR(255) NOT NULL,
+	last_name	VARCHAR(255) NOT NULL,
+	password	VARCHAR(255) NOT NULL,
+	role_name	VARCHAR(255) NOT NULL
 );
