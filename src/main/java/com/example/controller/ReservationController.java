@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.example.form.ReservationForm;
 import com.example.model.ReservableRoomId;
 import com.example.model.Reservation;
 import com.example.model.RoleName;

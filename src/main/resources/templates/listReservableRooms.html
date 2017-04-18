@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:the="http://www.thymelieaf.org">
 <head>
-<meta charset="UTF-8" />
-<title th:text="|${#temporals.format(date, 'yyyy/M/d')}の会議室|">2017/4/14の会議室</title>
+  <meta charset="UTF-8" />
+  <title th:text="|${#temporals.format(date, 'yyyy/M/d')}の会議室|">2017/4/14の会議室</title>
 </head>
 <body>
-<h3>会議室</h3>
-<a th:href="@{'/reservablerooms/' + ${date.minusDays(1)}}">&lt; 前日</a>
-<span th:text="|${#temporals.format(date, 'yyyy/M/d')}の会議室|">2017/4/14の会議室</span>
-<a th:href="@{'/reservablerooms/' + ${date.plusDays(1)}}">&gt; 翌日</a>
+  <h3>会議室</h3>
+  <a th:href="@{'/reservablerooms/' + ${date.minusDays(1)}}">&lt; 前日</a>
+  <span th:text="|${#temporals.format(date, 'yyyy/M/d')}の会議室|">2017/4/14の会議室</span>
+  <a th:href="@{'/reservablerooms/' + ${date.plusDays(1)}}">&gt; 翌日</a>
 
-<ul>
-  <li th:each="room: ${reservablerooms}">
-    <a th:href="@{/reservations/' + ${date} + '/' + ${room.room.roomId}}" 
-        th:text="${room.room.roomName}"></a>
-  </li>
-</ul>
+  <ul>
+    <li th:each="room: ${reservablerooms}">
+      <a th:href="@{/reservations/' + ${date} + '/' + ${room.room.roomId}}" 
+          th:text="${room.room.roomName}"></a>
+    </li>
+  </ul>
 </body>
 </html>
