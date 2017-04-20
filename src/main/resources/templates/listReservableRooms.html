@@ -12,7 +12,7 @@
 
   <ul>
     <li th:each="room: ${reservablerooms}">
-      <a th:href="@{/reservations/' + ${date} + '/' + ${room.room.roomId}}" 
+      <a th:href="@{'/reservations/' + ${date} + '/' + ${room.room.roomId}}" 
           th:text="${room.room.roomName}"></a>
     </li>
   </ul>
