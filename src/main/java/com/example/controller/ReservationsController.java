@@ -2,6 +2,8 @@ package com.example.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,9 +18,9 @@ import com.example.form.ReservationForm;
 import com.example.model.ReservableRoom;
 import com.example.model.ReservableRoomId;
 import com.example.model.Reservation;
-import com.example.model.RoleName;
 import com.example.model.User;
 import com.example.service.ReservationService;
+import com.example.service.ReservationUserDetails;
 import com.example.service.RoomService;
 import com.example.service.exception.AlreadyReservedException;
 import com.example.service.exception.UnavailableReservationException;
@@ -48,6 +50,7 @@ public class ReservationsController {
 	
 	@RequestMapping(method = RequestMethod.GET)
 	String reserveForm(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @PathVariable("date") LocalDate date, 
+						@AuthenticationPrincipal ReservationUserDetails userDetails,
 						@PathVariable("roomId")Integer roomId, Model model) {
 		ReservableRoomId reservableRoomId = new ReservableRoomId(roomId, date);
 		List<Reservation> reservations = reservationService.findReservations(reservableRoomId);
@@ -60,26 +63,18 @@ public class ReservationsController {
 		model.addAttribute("room", roomService.findRoom(roomId));
 		model.addAttribute("reservations", reservations);
 		model.addAttribute("timeList", timeList);
-		model.addAttribute("user", dummyUser());
+		model.addAttribute("user", userDetails.getUser());
 		return "reserveForm";
 	}
-	
-	private User dummyUser() {
-		User user = new User();
-		user.setUserId("user");
-		user.setFirstName("太郎");
-		user.setLastName("山田");
-		user.setRoleName(RoleName.USER);
-		return user;
-	}
-	
+		
 	@RequestMapping(method = RequestMethod.POST)
 	String reserve(@Validated ReservationForm form, BindingResult bindingResult,
+					@AuthenticationPrincipal ReservationUserDetails userDetails,
 					@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @PathVariable("date") LocalDate date,
 					@PathVariable("roomId") Integer roomId, Model model) {
 		
 		if (bindingResult.hasErrors()) {
-			return reserveForm(date, roomId, model);
+			return reserveForm(date, userDetails,roomId, model);
 		}
 		
 		ReservableRoom reservableRoom = new ReservableRoom(new ReservableRoomId(roomId, date));
@@ -87,29 +82,31 @@ public class ReservationsController {
 		reservation.setStartTime(form.getStartTime());
 		reservation.setEndTime(form.getEndTime());
 		reservation.setReservableRoom(reservableRoom);
-		reservation.setUser(dummyUser());
+		reservation.setUser(userDetails.getUser());
 		
 		try {
 			reservationService.reserve(reservation);
 		}
 		catch (UnavailableReservationException | AlreadyReservedException e) {
 			model.addAttribute("error", e.getMessage());
-			return reserveForm(date, roomId, model);
+			return reserveForm(date, userDetails, roomId, model);
 		}
 		return "redirect:/reservations/{date}/{roomId}";
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, params = "cancel")
-	String cancel(@RequestParam("reservationId") Integer reservationId,
+	String cancel(@AuthenticationPrincipal ReservationUserDetails userDetails,
+					@RequestParam("reservationId") Integer reservationId,
 					@PathVariable("roomId") Integer roomId,
-					@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @PathVariable("date") LocalDate date, Model model) {
-		User user = dummyUser();
+					@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @PathVariable("date") LocalDate date, 
+					Model model) {
+		User user = userDetails.getUser();
 		try {
 			reservationService.cancel(reservationId, user);
 		}
-		catch (IllegalStateException e) {
+		catch (AccessDeniedException e) {
 			model.addAttribute("error", e.getMessage());
-			return reserveForm(date, roomId, model);
+			return reserveForm(date, userDetails,roomId, model);
 		}
 		return "redirect:/reservations/{date}/{roomId}";
 	}

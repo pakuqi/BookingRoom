@@ -1,44 +1,51 @@
-# templateSpringProject
+# BookingRoom
 
-## About this Project
-This is template for Spring Boot
+## このプロジェクトに関して
+Spring徹底入門 SHOEISHAの14章チュートリアルを写経したものです。
+パッケージ名、一部クラス名などは自分の好みで変えています。
 
-## Precondition
-The following software are installed
+## 事前にインストールするもの
+以下のソフトウエアをインストールしておいて下さい。
 - Java 1.8
 - Vitrual Box
 - Vagrant
 - Gradle
 
-## Dependencies
-Dependencies are already listed at build.gradle.
+## 依存関係
+依存するパッケージはbuild.gradleに記載済みです。
 - Spring Boot 1.5.2
 - JPA
+- Spring Security
 - PostgreSQL
 - Thymeleaf
 - Web
 - Flyway
 
-## Database
-PostgreSQL runs on Virtual Box.
+## データベース
+PostgreSQLをVirtual Box上で動作させます。
 
-DB name is demodb
+DB名はdemodbです。以下のコマンドで確認できます。
 1. $ vagrant up
 2. $ vagrant ssh
 3. $ psql demodb
 
-If you'd like reinstall PostgreSQL, Please execute command below.
-
+PostgreSQLを再インストールしたい場合は以下のコマンドを実行して下さい。
 $ vagrant provision
 
-## How to start application
-Please execute the following command at the terminal.
+## アプリケーションの起動の仕方
+ターミナルで以下のコマンドを実行して下さい。
 
-1. $vagrant up (The first time it takes time to download BOX (ubuntu / trusty64) and install PostgreSQL)
-2. $gradle flywayMigrate
+1. $vagrant up (最初の実行時はBOX (ubuntu / trusty64)のダウンロードとPostgreSQLのインストールを実行します)
+2. $gradle flywayMigrate（最初の一回だけ）
 3. $gradle bootRun
 
-Access localhost:8080 using the browser.
+localhost:8080にブラウザでアクセスして下さい。
 
-It is displayed Hello World
+ログイン画面が表示されます。
+管理権限: admin/demo
+一般権限: user/demo
+でログインして下さい。
+
+
+
 
